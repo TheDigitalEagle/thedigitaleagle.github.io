@@ -1,0 +1,47 @@
+---
+const { title = "Kullhem.io", description = "Projects, notes, and links by Chad Kullhem" } = Astro.props;
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <link rel="icon" href="/favicon.svg" />
+    <style>
+      :root{--bg:#0b0c10;--card:#111217;--text:#e6e6e6;--muted:#a0a0a0;--accent:#4fd1c5;}
+      *{box-sizing:border-box}
+      body{margin:0;background:var(--bg);color:var(--text);font:16px/1.6 system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Helvetica Neue, Arial, "Apple Color Emoji","Segoe UI Emoji"}
+      a{color:var(--accent);text-decoration:none}
+      a:hover{text-decoration:underline}
+      .container{max-width:980px;margin:0 auto;padding:24px}
+      .card{background:var(--card);border-radius:16px;padding:24px;box-shadow:0 4px 30px rgba(0,0,0,.25)}
+      header{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px}
+      nav a{margin-right:16px}
+      footer{margin-top:40px;color:var(--muted);font-size:.9rem}
+      .tag{display:inline-block;padding:.2rem .5rem;border:1px solid #2a2b33;border-radius:999px;color:var(--muted);font-size:.8rem}
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <div><span class="tag">Kullhem.io</span></div>
+        <nav>
+          <a href="/">Home</a>
+          <a href="/blog">Blog</a>
+          <a href="https://github.com/TheDigitalEagle" target="_blank" rel="noopener">GitHub</a>
+        </nav>
+      </header>
+      <main class="card">
+        <slot />
+      </main>
+      <footer>
+        © {new Date().getFullYear()} Kullhem · Built with Astro · Deployed on GitHub Pages
+      </footer>
+    </div>
+  </body>
+</html>

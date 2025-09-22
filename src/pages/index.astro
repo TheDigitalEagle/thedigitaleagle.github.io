@@ -1,0 +1,18 @@
+---
+import Base from "../layouts/Base.astro";
+const projects = [
+  { name: "TheDigitEagle.kullhem.io", href: "https://github.com/TheDigitalEagle/thedigitaleagle.github.io", desc: "Personal site on GitHub Pages" },
+];
+---
+<Base title="Kullhem.io — Projects" description="Projects and links by Chad Kullhem">
+  <h1 style="margin-top:0">Hey, I’m Chad.</h1>
+  <p>Senior full‑stack engineer at SNKE. This is the fast, clean rebuild of my site on Astro + GitHub Pages.</p>
+  <h2>Projects</h2>
+  <ul>
+    {projects.map(p => (
+      <li><a href={p.href} target="_blank" rel="noopener">{p.name}</a> — {p.desc}</li>
+    ))}
+  </ul>
+  <h2>Blog</h2>
+  <p>Markdown posts live at <code>/blog</code>. Start by editing <code>src/pages/blog/hello-world.md</code>.</p>
+</Base>
