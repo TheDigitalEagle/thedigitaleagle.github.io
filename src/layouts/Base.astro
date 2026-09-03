@@ -1,47 +1,162 @@
 ---
-const { title = "Kullhem.io", description = "Projects, notes, and links by Chad Kullhem" } = Astro.props;
+const SITE = "Kullhem Labs";
+const DEFAULT_DESC =
+  "Kullhem Labs is an independent engineering lab for practical AI, homelab infrastructure, automation, hardware experiments, and weird useful software.";
+const {
+  title,
+  description = DEFAULT_DESC,
+  ogImage = "/kullhem-labs-logo.png",
+} = Astro.props;
+const fullTitle = title ? `${title} · ${SITE}` : `${SITE} · Useful systems from the edge of chaos`;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const ogUrl = new URL(ogImage, Astro.site);
+const path = Astro.url.pathname;
+const isActive = (href: string) =>
+  href === "/" ? path === "/" : path.startsWith(href);
+const nav = [
+  { href: "/", label: "Home" },
+  { href: "/projects/", label: "Projects" },
+  { href: "/blog/", label: "Notes" },
+];
 ---
 <!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>{title}</title>
+    <title>{fullTitle}</title>
     <meta name="description" content={description} />
-    <meta property="og:title" content={title} />
+    <link rel="canonical" href={canonical} />
+    <meta name="theme-color" content="#0e0f14" />
+    <meta property="og:site_name" content={SITE} />
+    <meta property="og:title" content={fullTitle} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
-    <link rel="icon" href="/favicon.svg" />
-    <style>
-      :root{--bg:#0b0c10;--card:#111217;--text:#e6e6e6;--muted:#a0a0a0;--accent:#4fd1c5;}
-      *{box-sizing:border-box}
-      body{margin:0;background:var(--bg);color:var(--text);font:16px/1.6 system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Helvetica Neue, Arial, "Apple Color Emoji","Segoe UI Emoji"}
-      a{color:var(--accent);text-decoration:none}
-      a:hover{text-decoration:underline}
-      .container{max-width:980px;margin:0 auto;padding:24px}
-      .card{background:var(--card);border-radius:16px;padding:24px;box-shadow:0 4px 30px rgba(0,0,0,.25)}
-      header{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px}
-      nav a{margin-right:16px}
-      footer{margin-top:40px;color:var(--muted);font-size:.9rem}
-      .tag{display:inline-block;padding:.2rem .5rem;border:1px solid #2a2b33;border-radius:999px;color:var(--muted);font-size:.8rem}
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogUrl} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="alternate" type="application/rss+xml" title="Kullhem Labs notes" href="/rss.xml" />
+    <style is:global>
+      :root {
+        --bg: #0e0f14;
+        --bg-raised: #14161d;
+        --card: #181a23;
+        --border: #262935;
+        --text: #e8e8ee;
+        --muted: #9a9cab;
+        --accent: #a78bfa;
+        --accent-strong: #7c3aed;
+        --accent-soft: rgba(124, 58, 237, 0.14);
+        --logo-tile: #f8f8f8;
+        --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+        --sans: system-ui, -apple-system, "Segoe UI", Roboto, Ubuntu, Cantarell, "Noto Sans", "Helvetica Neue", Arial, sans-serif;
+      }
+      * { box-sizing: border-box; }
+      html { scroll-behavior: smooth; }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--text);
+        font: 16px/1.65 var(--sans);
+        -webkit-font-smoothing: antialiased;
+      }
+      a { color: var(--accent); text-decoration: none; }
+      a:hover { text-decoration: underline; }
+      h1, h2, h3 { line-height: 1.2; letter-spacing: -0.01em; margin: 0 0 0.5rem; }
+      h1 { font-size: clamp(2rem, 4.5vw, 3rem); }
+      h2 { font-size: clamp(1.4rem, 2.6vw, 1.85rem); }
+      h3 { font-size: 1.1rem; }
+      p { margin: 0 0 1rem; }
+      code { font-family: var(--mono); font-size: 0.9em; background: var(--bg-raised); padding: 0.1em 0.35em; border-radius: 6px; }
+      pre { background: var(--bg-raised); border: 1px solid var(--border); border-radius: 12px; padding: 1rem; overflow-x: auto; }
+      pre code { background: none; padding: 0; }
+      .container { max-width: 1040px; margin: 0 auto; padding: 0 24px; }
+      .skip { position: absolute; left: -999px; }
+      .skip:focus { left: 16px; top: 16px; background: var(--card); padding: 8px 12px; border-radius: 8px; z-index: 10; }
+
+      /* header */
+      .site-header { border-bottom: 1px solid var(--border); background: rgba(14, 15, 20, 0.85); backdrop-filter: blur(8px); position: sticky; top: 0; z-index: 5; }
+      .site-header .container { display: flex; align-items: center; justify-content: space-between; gap: 16px; height: 64px; }
+      .brand { display: inline-flex; align-items: center; gap: 10px; color: var(--text); font-weight: 700; letter-spacing: -0.01em; }
+      .brand:hover { text-decoration: none; }
+      .brand .mark { width: 34px; height: 30px; border-radius: 8px; background: var(--logo-tile); object-fit: contain; padding: 2px; }
+      .brand span em { font-style: normal; color: var(--accent); }
+      .site-nav { display: flex; align-items: center; gap: 4px; }
+      .site-nav a { color: var(--muted); padding: 6px 10px; border-radius: 8px; font-size: 0.95rem; }
+      .site-nav a:hover { color: var(--text); background: var(--bg-raised); text-decoration: none; }
+      .site-nav a[aria-current="page"] { color: var(--text); background: var(--accent-soft); }
+      .site-nav .gh { display: inline-flex; align-items: center; gap: 6px; }
+      .site-nav .gh svg { width: 16px; height: 16px; fill: currentColor; }
+
+      main { padding: 48px 0 64px; }
+      .site-footer { border-top: 1px solid var(--border); color: var(--muted); font-size: 0.9rem; padding: 28px 0 40px; }
+      .site-footer .container { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; }
+
+      /* shared bits */
+      .section { margin-top: 56px; }
+      .section-head { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; margin-bottom: 20px; }
+      .section-head p { color: var(--muted); margin: 0; }
+      .eyebrow { font-family: var(--mono); font-size: 0.75rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); margin-bottom: 8px; }
+      .grid { display: grid; gap: 16px; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
+      .grid.fill-last > :last-child:nth-child(3n + 1) { grid-column: 1 / -1; }
+      .card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 20px 22px; }
+      .card h3 { margin-top: 0; }
+      .card p { color: var(--muted); margin-bottom: 0; }
+      .btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 18px; border-radius: 10px; font-weight: 600; border: 1px solid var(--border); color: var(--text); background: var(--bg-raised); }
+      .btn:hover { text-decoration: none; border-color: var(--accent); }
+      .btn.primary { background: var(--accent-strong); border-color: var(--accent-strong); color: #fff; }
+      .btn.primary:hover { filter: brightness(1.1); }
+      .btn svg { width: 18px; height: 18px; fill: currentColor; }
+      .chip { display: inline-block; font-family: var(--mono); font-size: 0.72rem; padding: 0.15rem 0.55rem; border: 1px solid var(--border); border-radius: 999px; color: var(--muted); }
+      .chip.status-active { color: #6ee7b7; border-color: rgba(110, 231, 183, 0.35); }
+      .chip.status-research { color: var(--accent); border-color: rgba(167, 139, 250, 0.4); }
+      .chip.status-prototype { color: #fcd34d; border-color: rgba(252, 211, 77, 0.35); }
+      .chip.status-archived { color: var(--muted); }
+      .muted { color: var(--muted); }
+      @media (max-width: 640px) {
+        .site-header .container { height: auto; padding: 12px 16px; flex-wrap: wrap; }
+        .container { padding: 0 16px; }
+        .section-head { flex-direction: column; align-items: flex-start; gap: 4px; }
+        main { padding: 32px 0 48px; }
+      }
     </style>
+    <slot name="head" />
   </head>
   <body>
-    <div class="container">
-      <header>
-        <div><span class="tag">Kullhem.io</span></div>
-        <nav>
-          <a href="/">Home</a>
-          <a href="/blog">Blog</a>
-          <a href="https://github.com/TheDigitalEagle" target="_blank" rel="noopener">GitHub</a>
+    <a class="skip" href="#main">Skip to content</a>
+    <header class="site-header">
+      <div class="container">
+        <a class="brand" href="/" aria-label="Kullhem Labs home">
+          <img class="mark" src="/kullhem-labs-mark.png" alt="" width="34" height="30" />
+          <span>Kullhem <em>Labs</em></span>
+        </a>
+        <nav class="site-nav" aria-label="Primary">
+          {nav.map((n) => (
+            <a href={n.href} aria-current={isActive(n.href) ? "page" : undefined}>{n.label}</a>
+          ))}
+          <a class="gh" href="https://github.com/Kullhem-io" target="_blank" rel="noopener">
+            <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>
+            GitHub
+          </a>
         </nav>
-      </header>
-      <main class="card">
+      </div>
+    </header>
+    <main id="main">
+      <div class="container">
         <slot />
-      </main>
-      <footer>
-        © {new Date().getFullYear()} Kullhem · Built with Astro · Deployed on GitHub Pages
-      </footer>
-    </div>
+      </div>
+    </main>
+    <footer class="site-footer">
+      <div class="container">
+        <div>© {new Date().getFullYear()} Kullhem Labs · kullhem.io</div>
+        <div>
+          Run by <a href="https://github.com/TheDigitalEagle" target="_blank" rel="noopener">Chad Kullhem</a>
+          · <a href="https://github.com/Kullhem-io" target="_blank" rel="noopener">GitHub org</a>
+          · <a href="/rss.xml">RSS</a>
+          · <a href="https://github.com/TheDigitalEagle/thedigitaleagle.github.io" target="_blank" rel="noopener">Site source</a>
+        </div>
+      </div>
+    </footer>
   </body>
 </html>

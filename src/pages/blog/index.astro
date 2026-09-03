@@ -1,27 +1,25 @@
 ---
 import Base from "../../layouts/Base.astro";
-
-// Eagerly grab all Markdown files in this folder at build time
-const entries = import.meta.glob("./*.md", { eager: true });
-
-// Build a simple list of routes/titles
-const posts = Object.keys(entries)
-  .map((k) => {
-    const name = k.replace("./", "").replace(".md", "");
-    // If your MD files have "title" in frontmatter, prefer it:
-    // @ts-ignore - entries[k] is a Markdown instance with frontmatter
-    const frontmatter = entries[k]?.frontmatter ?? {};
-    return {
-      route: `/blog/${name}`,
-      title: frontmatter.title ?? name.replace(/-/g, " "),
-    };
-  })
-  .sort((a, b) => a.title.localeCompare(b.title));
+import { getPosts } from "../../lib/posts";
+const posts = getPosts();
 ---
-
-<Base title="Blog — Kullhem.io">
-  <h1>Blog</h1>
-  <ul>
-    {posts.map((p) => <li><a href={p.route}>{p.title}</a></li>)}
+<Base title="Notes" description="Lab notes from Kullhem Labs: write-ups, edge cases, and what was learned building things.">
+  <p class="eyebrow">Notes</p>
+  <h1>Lab notes</h1>
+  <p class="lede">Write-ups, weird edge cases, and what was learned. Also available as <a href="/rss.xml">RSS</a>.</p>
+  <ul class="posts">
+    {posts.map((p) => (
+      <li class="card">
+        <time class="muted" datetime={p.date.toISOString()}>{p.dateText}</time>
+        <h3><a href={p.route}>{p.title}</a></h3>
+        {p.description && <p>{p.description}</p>}
+      </li>
+    ))}
   </ul>
 </Base>
+<style>
+  .lede { color: var(--muted); }
+  .posts { list-style: none; padding: 0; margin: 24px 0 0; display: grid; gap: 12px; }
+  .posts time { font-family: var(--mono); font-size: 0.8rem; }
+  .posts h3 { margin: 4px 0 6px; }
+</style>

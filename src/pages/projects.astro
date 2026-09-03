@@ -1,0 +1,26 @@
+---
+import Base from "../layouts/Base.astro";
+import ProjectCard from "../components/ProjectCard.astro";
+import { projects, STATUS_LABEL } from "../data/projects";
+const order = ["active", "research", "prototype", "archived"] as const;
+const sorted = [...projects].sort((a, b) => order.indexOf(a.status) - order.indexOf(b.status));
+---
+<Base title="Projects" description="Public projects from Kullhem Labs: hardware bridges, multi-agent engines, local LLM research, GPU containers, and small tools.">
+  <p class="eyebrow">Projects</p>
+  <h1>What the lab has built</h1>
+  <p class="lede">
+    Everything public in the <a href="https://github.com/Kullhem-io" target="_blank" rel="noopener">Kullhem-io</a> org,
+    minus housekeeping repos. This list is curated by hand at build time; the repos are the source of truth.
+  </p>
+  <p class="legend">
+    {order.map((s) => <span class={`chip status-${s}`}>{STATUS_LABEL[s]}</span>)}
+  </p>
+  <div class="grid">
+    {sorted.map((p) => <ProjectCard project={p} />)}
+  </div>
+</Base>
+<style>
+  .lede { color: var(--muted); max-width: 64ch; }
+  .legend { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 24px; }
+  .grid { grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); }
+</style>

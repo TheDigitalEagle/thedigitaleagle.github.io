@@ -1,0 +1,22 @@
+---
+import Base from "./Base.astro";
+const { frontmatter } = Astro.props;
+const date = frontmatter.date ? new Date(frontmatter.date) : null;
+const dateText = date?.toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric", timeZone: "UTC" });
+---
+<Base title={frontmatter.title} description={frontmatter.description}>
+  <article class="post">
+    <p class="eyebrow"><a href="/blog/">Notes</a>{dateText && <> · <time datetime={date.toISOString()}>{dateText}</time></>}</p>
+    <h1>{frontmatter.title}</h1>
+    {frontmatter.description && <p class="lede">{frontmatter.description}</p>}
+    <div class="body"><slot /></div>
+  </article>
+</Base>
+<style>
+  .post { max-width: 72ch; }
+  .lede { color: var(--muted); font-size: 1.1rem; }
+  .body :global(h2) { margin-top: 2rem; }
+  .body :global(ul), .body :global(ol) { padding-left: 1.3rem; }
+  .body :global(li) { margin-bottom: 0.3rem; }
+  .body :global(img) { max-width: 100%; border-radius: 12px; }
+</style>
