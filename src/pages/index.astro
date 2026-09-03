@@ -1,7 +1,7 @@
 ---
 import Base from "../layouts/Base.astro";
 import ProjectCard from "../components/ProjectCard.astro";
-import { featured } from "../data/projects";
+import { featured, spotlight } from "../data/projects";
 import { tagline, summary, areas, philosophy, tools } from "../data/lab";
 ---
 <Base>
@@ -35,6 +35,36 @@ import { tagline, summary, areas, philosophy, tools } from "../data/lab";
           <p>{a.blurb}</p>
         </div>
       ))}
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="spotlight card">
+      <div class="spotlight-copy">
+        <p class="eyebrow">Spotlight · {spotlight.area}</p>
+        <h2><a href={spotlight.repo} target="_blank" rel="noopener">{spotlight.name}</a></h2>
+        <p class="spot-tagline">{spotlight.tagline}</p>
+        <p class="spot-desc">{spotlight.description}</p>
+        <div class="actions">
+          <a class="btn primary" href={spotlight.repo} target="_blank" rel="noopener">View Beaglewing on GitHub</a>
+          <span class="chips">{spotlight.languages.map((l) => <span class="chip">{l}</span>)}</span>
+        </div>
+      </div>
+      <div class="spotlight-side">
+        <div class="flow" aria-label="How Beaglewing connects">
+          <div class="node">Linux desktop<small>input router</small></div>
+          <div class="arrow">LAN ↓</div>
+          <div class="node">Raspberry Pi 4<small>USB gadget "beaglewing"</small></div>
+          <div class="arrow">USB-C ↓</div>
+          <div class="node">Any USB host<small>sees a keyboard, a mouse, one vendor device</small></div>
+        </div>
+        <ul class="wins">
+          <li>Nothing to install on the controlled machine</li>
+          <li>Zero network exposure, clipboard rides the USB cable</li>
+          <li>Works at the login screen, UAC prompts, installers, safe mode</li>
+          <li>Survives reboots, the device just re-enumerates</li>
+        </ul>
+      </div>
     </div>
   </section>
 
@@ -81,6 +111,18 @@ import { tagline, summary, areas, philosophy, tools } from "../data/lab";
   .actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 8px; }
   .hero-logo { background: var(--logo-tile); border-radius: 20px; padding: 28px; box-shadow: 0 20px 60px rgba(124, 58, 237, 0.18); }
   .hero-logo img { display: block; width: 100%; height: auto; }
+  .spotlight { display: grid; grid-template-columns: 1.1fr 1fr; gap: 32px; padding: 28px 30px; border-color: rgba(124, 58, 237, 0.45); background: linear-gradient(135deg, rgba(124, 58, 237, 0.12), var(--card) 55%); }
+  .spotlight h2 a { color: var(--text); }
+  .spot-tagline { font-size: 1.15rem; color: var(--text); }
+  .spot-desc { color: var(--muted); margin-bottom: 18px; }
+  .spotlight .actions { align-items: center; }
+  .spotlight .chips { display: inline-flex; flex-wrap: wrap; gap: 6px; }
+  .flow { display: grid; gap: 4px; font-family: var(--mono); font-size: 0.8rem; text-align: center; margin-bottom: 18px; }
+  .flow .node { background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 8px 10px; color: var(--text); }
+  .flow .node small { display: block; color: var(--muted); font-size: 0.72rem; }
+  .flow .arrow { color: var(--accent); }
+  .wins { margin: 0; padding-left: 1.2rem; display: grid; gap: 4px; color: var(--muted); font-size: 0.95rem; }
+  .wins li::marker { color: #6ee7b7; }
   .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
   .philosophy { margin: 0; padding-left: 1.2rem; display: grid; gap: 6px; }
   .philosophy li { font-weight: 600; }
@@ -90,6 +132,7 @@ import { tagline, summary, areas, philosophy, tools } from "../data/lab";
   @media (max-width: 820px) {
     .hero { grid-template-columns: 1fr; }
     .hero-logo { order: -1; padding: 20px; }
+    .spotlight { grid-template-columns: 1fr; padding: 22px; }
     .two-col { grid-template-columns: 1fr; }
   }
 </style>

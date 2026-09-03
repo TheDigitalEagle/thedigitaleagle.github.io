@@ -63,6 +63,7 @@ export const projects: Project[] = [
     languages: ["Docker", "Shell", "TensorRT"],
     status: "prototype",
     area: "Practical AI",
+    featured: true,
   },
   {
     name: "CC Link Manager",
@@ -86,4 +87,5 @@ export const projects: Project[] = [
   },
 ];
 
-export const featured = projects.filter((p) => p.featured);
+export const spotlight = projects.find((p) => p.name === "Beaglewing")!;
+export const featured = projects.filter((p) => p.featured && p !== spotlight);
