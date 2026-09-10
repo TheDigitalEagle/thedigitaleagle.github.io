@@ -1,0 +1,43 @@
+---
+import type { Project } from "../data/projects";
+import { STATUS_LABEL } from "../data/projects";
+interface Props { project: Project; index: number; full?: boolean }
+const { project, index, full = false } = Astro.props;
+const no = String(index + 1).padStart(2, "0");
+---
+<article class="row">
+  <div class="no mono">{no}</div>
+  <div class="body">
+    <h3><a href={project.repo} target="_blank" rel="noopener">{project.name}</a></h3>
+    <p class="pitch">{project.tagline}</p>
+    {full && <p class="desc">{project.description}</p>}
+  </div>
+  <div class="meta mono">
+    <span class={`tag status-${project.status}`}>{STATUS_LABEL[project.status]}</span>
+    <span class="langs">{project.languages.join(" / ")}</span>
+    <span class="area">{project.area}</span>
+    <a href={project.repo} target="_blank" rel="noopener">repo <span class="arrow">↗</span></a>
+  </div>
+</article>
+<style>
+  .row { display: grid; grid-template-columns: 48px 1fr 220px; gap: 20px; padding: 26px 0; border-top: 1px solid var(--line-soft); position: relative; }
+  .row:last-of-type { border-bottom: 1px solid var(--line-soft); }
+  .row::before { content: ""; position: absolute; left: -28px; top: 0; bottom: 0; width: 2px; background: var(--violet); transform: scaleY(0); transform-origin: top; transition: transform 0.35s ease; }
+  .row:hover::before { transform: scaleY(1); }
+  .no { padding-top: 10px; color: var(--violet); }
+  .body h3 { margin: 0 0 4px; }
+  .body h3 a { text-decoration: none; }
+  .body h3 a:hover { color: var(--violet); }
+  .pitch { margin: 0; font-size: 1.05rem; }
+  .desc { margin: 12px 0 0; color: var(--ash); max-width: 62ch; }
+  .meta { display: flex; flex-direction: column; gap: 6px; padding-top: 12px; line-height: 1.5; }
+  .meta .langs { color: var(--bone); }
+  .meta a { color: var(--ash); text-decoration: none; margin-top: 6px; }
+  .meta a:hover { color: var(--bone); }
+  .meta .arrow { color: var(--violet); }
+  @media (max-width: 720px) {
+    .row { grid-template-columns: 36px 1fr; }
+    .meta { grid-column: 2; padding-top: 4px; flex-direction: row; flex-wrap: wrap; gap: 8px 14px; }
+    .meta .area { display: none; }
+  }
+</style>

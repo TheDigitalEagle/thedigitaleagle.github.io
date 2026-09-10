@@ -1,8 +1,15 @@
 ---
 import Base from "../layouts/Base.astro";
 ---
-<Base title="Not found" description="That page does not exist.">
-  <p class="eyebrow">404</p>
-  <h1>Looks like that page doesn't exist.</h1>
-  <p class="muted">Failure made visible. Try the <a href="/">home page</a> or the <a href="/projects/">projects list</a>.</p>
+<Base title="Not found" description="That page does not exist." pose="lost">
+  <div class="lost">
+    <p class="mono">404 · not found</p>
+    <h1>The crow has not seen <em>this page.</em></h1>
+    <p class="lede">Neither has the server. Failure made visible, as promised.</p>
+    <p class="mono"><a href="/">home</a> · <a href="/projects/">catalog</a> · <a href="/blog/">notes</a></p>
+  </div>
 </Base>
+<style>
+  .lost { min-height: 50vh; max-width: 640px; }
+  .lost .mono a { text-decoration: none; }
+</style>

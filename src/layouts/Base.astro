@@ -1,23 +1,23 @@
 ---
+import Crow from "../components/Crow.astro";
 const SITE = "Kullhem Labs";
 const DEFAULT_DESC =
   "Kullhem Labs is an independent engineering lab for practical AI, homelab infrastructure, automation, hardware experiments, and weird useful software.";
-const {
-  title,
-  description = DEFAULT_DESC,
-  ogImage = "/kullhem-labs-logo.png",
-} = Astro.props;
+const { title, description = DEFAULT_DESC, ogImage = "/kullhem-labs-logo.png", pose } = Astro.props;
 const fullTitle = title ? `${title} · ${SITE}` : `${SITE} · Useful systems from the edge of chaos`;
 const canonical = new URL(Astro.url.pathname, Astro.site);
 const ogUrl = new URL(ogImage, Astro.site);
 const path = Astro.url.pathname;
-const isActive = (href: string) =>
-  href === "/" ? path === "/" : path.startsWith(href);
+const isActive = (href: string) => (href === "/" ? path === "/" : path.startsWith(href));
 const nav = [
-  { href: "/", label: "Home" },
-  { href: "/projects/", label: "Projects" },
-  { href: "/blog/", label: "Notes" },
+  { href: "/", label: "home" },
+  { href: "/projects/", label: "catalog" },
+  { href: "/blog/", label: "notes" },
 ];
+const sha = (process.env.GITHUB_SHA ?? "dev").slice(0, 7);
+const built = new Date().toISOString().slice(0, 10);
+// pick a crow pose per page unless the page names one
+const autoPose = path === "/" ? "hero" : path.startsWith("/projects") ? "corner" : path.startsWith("/blog/") && path !== "/blog/" ? "margin" : path.startsWith("/blog") ? "peek" : "lost";
 ---
 <!doctype html>
 <html lang="en">
@@ -27,7 +27,7 @@ const nav = [
     <title>{fullTitle}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
-    <meta name="theme-color" content="#0e0f14" />
+    <meta name="theme-color" content="#09090d" />
     <meta property="og:site_name" content={SITE} />
     <meta property="og:title" content={fullTitle} />
     <meta property="og:description" content={description} />
@@ -37,108 +37,139 @@ const nav = [
     <meta name="twitter:card" content="summary_large_image" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="alternate" type="application/rss+xml" title="Kullhem Labs notes" href="/rss.xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />
     <style is:global>
       :root {
-        --bg: #0e0f14;
-        --bg-raised: #14161d;
-        --card: #181a23;
-        --border: #262935;
-        --text: #e8e8ee;
-        --muted: #9a9cab;
-        --accent: #a78bfa;
-        --accent-strong: #7c3aed;
-        --accent-soft: rgba(124, 58, 237, 0.14);
-        --logo-tile: #f8f8f8;
-        --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
-        --sans: system-ui, -apple-system, "Segoe UI", Roboto, Ubuntu, Cantarell, "Noto Sans", "Helvetica Neue", Arial, sans-serif;
+        --ink: #09090d;
+        --ink-2: #0f0f15;
+        --line: #23222d;
+        --line-soft: #1a1922;
+        --bone: #e7e3da;
+        --ash: #8f8c99;
+        --violet: #8b5cf6;
+        --violet-deep: #5b3fc4;
+        --signal: #7fe0b0;
+        --serif: "Instrument Serif", "Iowan Old Style", "Palatino Linotype", Georgia, serif;
+        --mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+        --sans: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
       }
       * { box-sizing: border-box; }
       html { scroll-behavior: smooth; }
       body {
         margin: 0;
-        background: var(--bg);
-        color: var(--text);
+        background: var(--ink);
+        color: var(--bone);
         font: 16px/1.65 var(--sans);
         -webkit-font-smoothing: antialiased;
+        overflow-x: hidden;
+        position: relative;
       }
-      a { color: var(--accent); text-decoration: none; }
-      a:hover { text-decoration: underline; }
-      h1, h2, h3 { line-height: 1.2; letter-spacing: -0.01em; margin: 0 0 0.5rem; }
-      h1 { font-size: clamp(2rem, 4.5vw, 3rem); }
-      h2 { font-size: clamp(1.4rem, 2.6vw, 1.85rem); }
-      h3 { font-size: 1.1rem; }
+      /* graph paper, fading at the edges, drifting very slowly */
+      body::before {
+        content: "";
+        position: fixed; inset: 0; z-index: -2; pointer-events: none;
+        background-image:
+          linear-gradient(to right, rgba(231, 227, 218, 0.045) 1px, transparent 1px),
+          linear-gradient(to bottom, rgba(231, 227, 218, 0.045) 1px, transparent 1px);
+        background-size: 48px 48px;
+        -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 40%, #000 30%, transparent 100%);
+        mask-image: radial-gradient(ellipse 70% 60% at 50% 40%, #000 30%, transparent 100%);
+        animation: drift-grid 120s linear infinite;
+      }
+      /* grain */
+      body::after {
+        content: "";
+        position: fixed; inset: -50%; z-index: -1; pointer-events: none; opacity: 0.05;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+        animation: grain 1.2s steps(6) infinite;
+      }
+      @keyframes drift-grid { from { background-position: 0 0, 0 0; } to { background-position: 48px 96px, 48px 96px; } }
+      @keyframes grain {
+        0% { transform: translate(0, 0); } 20% { transform: translate(-3%, 2%); } 40% { transform: translate(2%, -4%); }
+        60% { transform: translate(-4%, -1%); } 80% { transform: translate(3%, 3%); } 100% { transform: translate(0, 0); }
+      }
+      a { color: var(--bone); text-decoration: underline; text-decoration-color: rgba(139, 92, 246, 0.55); text-underline-offset: 3px; text-decoration-thickness: 1px; }
+      a:hover { text-decoration-color: var(--violet); color: #fff; }
+      h1, h2, h3 { font-family: var(--serif); font-weight: 400; line-height: 1.05; letter-spacing: -0.005em; margin: 0 0 0.5rem; }
+      h1 { font-size: clamp(2.6rem, 6.5vw, 4.8rem); }
+      h2 { font-size: clamp(1.9rem, 3.6vw, 2.6rem); }
+      h3 { font-size: 1.55rem; }
+      h1 em, h2 em, .em { font-style: italic; color: var(--violet); }
       p { margin: 0 0 1rem; }
-      code { font-family: var(--mono); font-size: 0.9em; background: var(--bg-raised); padding: 0.1em 0.35em; border-radius: 6px; }
-      pre { background: var(--bg-raised); border: 1px solid var(--border); border-radius: 12px; padding: 1rem; overflow-x: auto; }
-      pre code { background: none; padding: 0; }
-      .container { max-width: 1040px; margin: 0 auto; padding: 0 24px; }
+      code { font-family: var(--mono); font-size: 0.88em; background: var(--ink-2); border: 1px solid var(--line-soft); padding: 0.05em 0.35em; border-radius: 3px; }
+      pre { background: var(--ink-2); border: 1px solid var(--line); border-radius: 4px; padding: 1rem; overflow-x: auto; }
+      pre code { background: none; border: 0; padding: 0; }
+      .container { max-width: 1080px; margin: 0 auto; padding: 0 28px; position: relative; }
       .skip { position: absolute; left: -999px; }
-      .skip:focus { left: 16px; top: 16px; background: var(--card); padding: 8px 12px; border-radius: 8px; z-index: 10; }
+      .skip:focus { left: 16px; top: 16px; background: var(--ink-2); padding: 8px 12px; z-index: 50; }
 
       /* header */
-      .site-header { border-bottom: 1px solid var(--border); background: rgba(14, 15, 20, 0.85); backdrop-filter: blur(8px); position: sticky; top: 0; z-index: 5; }
-      .site-header .container { display: flex; align-items: center; justify-content: space-between; gap: 16px; height: 64px; }
-      .brand { display: inline-flex; align-items: center; gap: 10px; color: var(--text); font-weight: 700; letter-spacing: -0.01em; }
-      .brand:hover { text-decoration: none; }
-      .brand .mark { width: 34px; height: 30px; border-radius: 8px; background: var(--logo-tile); object-fit: contain; padding: 2px; }
-      .brand span em { font-style: normal; color: var(--accent); }
-      .site-nav { display: flex; align-items: center; gap: 4px; }
-      .site-nav a { color: var(--muted); padding: 6px 10px; border-radius: 8px; font-size: 0.95rem; }
-      .site-nav a:hover { color: var(--text); background: var(--bg-raised); text-decoration: none; }
-      .site-nav a[aria-current="page"] { color: var(--text); background: var(--accent-soft); }
-      .site-nav .gh { display: inline-flex; align-items: center; gap: 6px; }
-      .site-nav .gh svg { width: 16px; height: 16px; fill: currentColor; }
+      .site-header { position: relative; z-index: 3; border-bottom: 1px solid var(--line-soft); }
+      .site-header .container { display: flex; align-items: center; justify-content: space-between; gap: 16px; height: 68px; }
+      .brand { display: inline-flex; align-items: center; gap: 12px; text-decoration: none; }
+      .brand img { width: 30px; height: 28px; object-fit: contain; }
+      .brand .wordmark { font-family: var(--serif); font-size: 1.45rem; letter-spacing: 0.01em; }
+      .brand .wordmark i { color: var(--violet); }
+      .site-nav { display: flex; align-items: center; gap: 22px; font-family: var(--mono); font-size: 0.82rem; letter-spacing: 0.06em; }
+      .site-nav a { color: var(--ash); text-decoration: none; padding: 4px 0; border-bottom: 1px solid transparent; }
+      .site-nav a:hover { color: var(--bone); }
+      .site-nav a[aria-current="page"] { color: var(--bone); border-bottom-color: var(--violet); }
+      .site-nav .signal { display: inline-flex; align-items: center; gap: 8px; }
+      .site-nav .signal::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--signal); box-shadow: 0 0 8px var(--signal); animation: pulse 3.2s ease-in-out infinite; }
+      @keyframes pulse { 0%, 100% { opacity: 0.35; } 50% { opacity: 1; } }
 
-      main { padding: 48px 0 64px; }
-      .site-footer { border-top: 1px solid var(--border); color: var(--muted); font-size: 0.9rem; padding: 28px 0 40px; }
-      .site-footer .container { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; }
+      main { position: relative; z-index: 2; padding: 56px 0 96px; }
+      .site-footer { position: relative; z-index: 2; border-top: 1px solid var(--line-soft); font-family: var(--mono); font-size: 0.76rem; color: var(--ash); letter-spacing: 0.03em; padding: 26px 0 48px; }
+      .site-footer .container { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10px 24px; }
+      .site-footer a { color: var(--ash); text-decoration: none; }
+      .site-footer a:hover { color: var(--bone); }
 
-      /* shared bits */
-      .section { margin-top: 56px; }
-      .section-head { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; margin-bottom: 20px; }
-      .section-head p { color: var(--muted); margin: 0; }
-      .eyebrow { font-family: var(--mono); font-size: 0.75rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); margin-bottom: 8px; }
-      .grid { display: grid; gap: 16px; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
-      .grid.fill-last > :last-child:nth-child(3n + 1) { grid-column: 1 / -1; }
-      .card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 20px 22px; }
-      .card h3 { margin-top: 0; }
-      .card p { color: var(--muted); margin-bottom: 0; }
-      .btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 18px; border-radius: 10px; font-weight: 600; border: 1px solid var(--border); color: var(--text); background: var(--bg-raised); }
-      .btn:hover { text-decoration: none; border-color: var(--accent); }
-      .btn.primary { background: var(--accent-strong); border-color: var(--accent-strong); color: #fff; }
-      .btn.primary:hover { filter: brightness(1.1); }
-      .btn svg { width: 18px; height: 18px; fill: currentColor; }
-      .chip { display: inline-block; font-family: var(--mono); font-size: 0.72rem; padding: 0.15rem 0.55rem; border: 1px solid var(--border); border-radius: 999px; color: var(--muted); }
-      .chip.status-active { color: #6ee7b7; border-color: rgba(110, 231, 183, 0.35); }
-      .chip.status-research { color: var(--accent); border-color: rgba(167, 139, 250, 0.4); }
-      .chip.status-prototype { color: #fcd34d; border-color: rgba(252, 211, 77, 0.35); }
-      .chip.status-archived { color: var(--muted); }
-      .muted { color: var(--muted); }
+      /* notebook furniture */
+      .rule { display: flex; align-items: center; gap: 14px; margin: 72px 0 28px; font-family: var(--mono); font-size: 0.74rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ash); }
+      .rule::after { content: ""; flex: 1; height: 1px; background: linear-gradient(to right, var(--line), transparent); }
+      .rule .no { color: var(--violet); }
+      .lede { font-size: 1.12rem; color: var(--ash); max-width: 60ch; }
+      .mono { font-family: var(--mono); font-size: 0.78rem; letter-spacing: 0.06em; color: var(--ash); }
+      .btn { display: inline-flex; align-items: center; gap: 10px; font-family: var(--mono); font-size: 0.82rem; letter-spacing: 0.06em; padding: 11px 18px; border: 1px solid var(--line); color: var(--bone); text-decoration: none; background: var(--ink-2); transition: border-color 0.2s, transform 0.2s; }
+      .btn:hover { border-color: var(--violet); color: #fff; transform: translateY(-1px); }
+      .btn.primary { border-color: var(--violet-deep); background: linear-gradient(180deg, rgba(139, 92, 246, 0.22), rgba(139, 92, 246, 0.08)); }
+      .btn .arrow { color: var(--violet); }
+      .tag { font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.08em; color: var(--ash); }
+      .tag.status-active { color: var(--signal); }
+      .tag.status-research { color: var(--violet); }
+      .tag.status-prototype { color: #e2c36b; }
+      .tag.status-archived { color: var(--ash); }
+
+      @media (prefers-reduced-motion: reduce) {
+        *, *::before, *::after { animation: none !important; transition: none !important; }
+        html { scroll-behavior: auto; }
+      }
       @media (max-width: 640px) {
-        .site-header .container { height: auto; padding: 12px 16px; flex-wrap: wrap; }
-        .container { padding: 0 16px; }
-        .section-head { flex-direction: column; align-items: flex-start; gap: 4px; }
-        main { padding: 32px 0 48px; }
+        .container { padding: 0 18px; }
+        .site-header .container { height: auto; padding: 14px 18px; flex-wrap: wrap; }
+        .site-nav { gap: 16px; }
+        main { padding: 36px 0 64px; }
+        .rule { margin: 52px 0 20px; }
       }
     </style>
     <slot name="head" />
   </head>
   <body>
     <a class="skip" href="#main">Skip to content</a>
+    <Crow pose={pose ?? autoPose} />
     <header class="site-header">
       <div class="container">
         <a class="brand" href="/" aria-label="Kullhem Labs home">
-          <img class="mark" src="/kullhem-labs-mark.png" alt="" width="34" height="30" />
-          <span>Kullhem <em>Labs</em></span>
+          <img src="/crow-bone.png" alt="" width="30" height="28" />
+          <span class="wordmark">Kullhem <i>Labs</i></span>
         </a>
         <nav class="site-nav" aria-label="Primary">
           {nav.map((n) => (
             <a href={n.href} aria-current={isActive(n.href) ? "page" : undefined}>{n.label}</a>
           ))}
-          <a class="gh" href="https://github.com/Kullhem-io" target="_blank" rel="noopener">
-            <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>
-            GitHub
-          </a>
+          <a class="signal" href="https://github.com/Kullhem-io" target="_blank" rel="noopener">github</a>
         </nav>
       </div>
     </header>
@@ -149,13 +180,8 @@ const nav = [
     </main>
     <footer class="site-footer">
       <div class="container">
-        <div>© {new Date().getFullYear()} Kullhem Labs · kullhem.io</div>
-        <div>
-          Run by <a href="https://github.com/TheDigitalEagle" target="_blank" rel="noopener">Chad Kullhem</a>
-          · <a href="https://github.com/Kullhem-io" target="_blank" rel="noopener">GitHub org</a>
-          · <a href="/rss.xml">RSS</a>
-          · <a href="https://github.com/TheDigitalEagle/thedigitaleagle.github.io" target="_blank" rel="noopener">Site source</a>
-        </div>
+        <div>kullhem labs · run by <a href="https://github.com/TheDigitalEagle" target="_blank" rel="noopener">chad kullhem</a> · <a href="https://github.com/Kullhem-io" target="_blank" rel="noopener">org</a> · <a href="/rss.xml">rss</a> · <a href="https://github.com/TheDigitalEagle/thedigitaleagle.github.io" target="_blank" rel="noopener">source</a></div>
+        <div>build {sha} · {built} · static, no backend, nothing watching you but the crow</div>
       </div>
     </footer>
   </body>

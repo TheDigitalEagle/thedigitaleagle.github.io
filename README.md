@@ -19,14 +19,19 @@ npm run preview
 Repo settings → Pages → Source: **GitHub Actions**. `public/CNAME` keeps the custom domain across deploys.
 
 ## Where things live
-- Lab copy (tagline, focus areas, philosophy, tools): `src/data/lab.ts`
-- Project list: `src/data/projects.ts` (hand-curated; add an entry when a repo is worth showing)
+- Lab copy (tagline, focus areas, philosophy, tools, status): `src/data/lab.ts`
+- Catalog entries: `src/data/projects.ts` (hand-curated; add an entry when a repo is worth showing)
 - Home: `src/pages/index.astro`
-- Projects page: `src/pages/projects.astro`
+- Catalog page: `src/pages/projects.astro` (rows rendered by `src/components/ProjectRow.astro`)
 - Notes (blog): `src/pages/blog/*.md` with `layout: ../../layouts/Post.astro` and a `date` in frontmatter
 - RSS: `src/pages/rss.xml.ts`
-- Global layout and styles: `src/layouts/Base.astro`
-- Logo assets and favicon: `public/`
+- Global layout, fonts, and theme tokens: `src/layouts/Base.astro`
+- The crow: `src/components/Crow.astro`. One pose per page (`hero`, `corner`, `peek`, `margin`, `lost`), picked from the route in `Base.astro` or passed as a `pose` prop. Also owns the eye tracking, the tagline slip, and the motes. All of it turns off under `prefers-reduced-motion`.
+- Assets: `public/crow-ink.png` (silhouette), `public/crow-bone.png` (header mark), `public/kullhem-labs-logo.png` (OpenGraph image), `public/favicon.svg`
+
+## Style notes
+Fonts are Instrument Serif (headlines), IBM Plex Mono (labels, nav, meta), and IBM Plex Sans (body), loaded from Google Fonts.
+The footer build stamp reads `GITHUB_SHA` at build time and falls back to `dev` locally.
 
 ## Adding a note
 Create `src/pages/blog/my-post.md`:

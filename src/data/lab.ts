@@ -1,12 +1,13 @@
-export const tagline = "Useful systems from the edge of chaos.";
+// Copy for the lab pages. Lines from the org profile README are kept as written.
+export const tagline = { lead: "Useful systems from the", em: "edge of chaos." };
 
 export const summary =
-  "Kullhem Labs is an independent engineering lab for practical software, automation, infrastructure, hardware-adjacent tools, and experimental interfaces. Rough ideas become working systems here: dashboards, bots, integrations, edge services, utilities, diagnostics, and prototypes that start as hacks but are built with real engineering discipline.";
+  "Kullhem Labs is an independent engineering lab for practical software, automation, infrastructure, hardware-adjacent tools, and experimental interfaces. This is where rough ideas become working systems: dashboards, bots, integrations, edge services, utilities, diagnostics, and prototypes that start as hacks but are built with real engineering discipline.";
 
 export const areas = [
   {
     title: "Practical AI",
-    blurb: "Local models on real hardware. Multi-agent engines, routers, benchmarks, and the tooling to find out what actually runs in parallel.",
+    blurb: "Local models on hardware you can touch. Multi-agent engines, routers, and benchmarks that find out what actually runs in parallel and what only claims to.",
   },
   {
     title: "Automation and workflow tools",
@@ -52,3 +53,6 @@ export const tools = [
   "APIs, bots, queues, events, and dashboards",
   "Hardware/software boundary experiments",
 ];
+
+export const status =
+  "Many repositories here are experiments, prototypes, or active workbenches. Some are polished. Some are intentionally messy while the idea is still being discovered. That is part of the lab.";

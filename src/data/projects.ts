@@ -12,10 +12,10 @@ export interface Project {
 }
 
 export const STATUS_LABEL: Record<Status, string> = {
-  active: "Active",
-  research: "Research",
-  prototype: "Prototype",
-  archived: "Dormant",
+  active: "active",
+  research: "research",
+  prototype: "prototype",
+  archived: "dormant",
 };
 
 const org = "https://github.com/Kullhem-io";
@@ -26,8 +26,8 @@ export const projects: Project[] = [
     repo: `${org}/beaglewing`,
     tagline: "A keyboard, mouse, and clipboard bridge where the second computer sees real USB hardware.",
     description:
-      "Slide your cursor off the edge of a Linux desktop and it comes out on the machine next to it, carried by a Raspberry Pi 4 in USB gadget mode. The controlled machine needs nothing installed, no network path back to you, and it works at the login screen, elevated prompts, and installers, because it is just a keyboard and mouse as far as the host knows.",
-    languages: ["Rust", "Python", "Raspberry Pi"],
+      "Slide your cursor off the edge of your Linux desktop and it comes out on the machine next to it, carried by an actual USB device, not a software agent. Think Synergy or Barrier, except the controlled machine needs nothing installed, nothing configured, and no network access to you at all. From its point of view, somebody plugged in a very good keyboard and mouse.",
+    languages: ["Rust", "Python", "Pi 4"],
     status: "active",
     area: "Hardware-adjacent experiments",
     featured: true,
@@ -37,8 +37,8 @@ export const projects: Project[] = [
     repo: `${org}/Crossplay`,
     tagline: "Stop putting every model behind a help desk. Give them a room, a game, and each other.",
     description:
-      "An AI text RPG driven by a parallel multi-agent engine. Several local LLMs each take a seat at the table, a Dungeon Master, a Narrator, and a party of Players, and play an adventure seeded from a single topic. The engine owns the ledger (dice, HP, inventory, map); the models own the story. Watch, whisper into the world, or pull up a chair yourself.",
-    languages: ["Go", "TypeScript", "React", "WebSocket"],
+      "An AI text RPG run by a parallel multi-agent engine. Several local LLMs each take a seat at the table: a Dungeon Master, a Narrator, and a party of Players. Seed a world with one topic and they play it. Mechanics first, prose second. Code owns the ledger; the DM owns the world. Watch, whisper into it, or pull up a chair.",
+    languages: ["Go", "TypeScript", "React"],
     status: "active",
     area: "Strange but useful prototypes",
     featured: true,
@@ -46,9 +46,9 @@ export const projects: Project[] = [
   {
     name: "Hybrid Local Agents",
     repo: `${org}/Research-Hybrid-Local-Agents-Proxies`,
-    tagline: "Benchmarking parallel subagent collaboration between two local LLMs across a three-GPU box.",
+    tagline: "Two local models, three GPUs, one question: what is the best way to use both at once.",
     description:
-      "A research workspace for finding the best way to run Qwen and Gemma at the same time on one machine: subagents, a proxy-based router, or a hybrid. Includes a GPU monitor dashboard, ten subagent definitions, benchmark logs, and written findings on where parallelism is real and where llama-server quietly serializes it.",
+      "A benchmarking workspace for subagents versus a proxy router versus a hybrid of the two. Includes a GPU monitor dashboard, ten subagent definitions split between Qwen and Gemma, and the benchmark logs. First finding: Qwen-to-Qwen parallel is not parallel. llama-server serializes it, and the only real concurrency is across models.",
     languages: ["JavaScript", "Node", "llama.cpp"],
     status: "research",
     area: "Practical AI",
@@ -57,9 +57,9 @@ export const projects: Project[] = [
   {
     name: "BFGPOD",
     repo: `${org}/BFGPOD`,
-    tagline: "Big Friendly GPU POD: Dockerized Stable Video Diffusion with TensorRT on an RTX 3090.",
+    tagline: "Big Friendly GPU POD. Stable Video Diffusion with TensorRT, in Docker, on an RTX 3090.",
     description:
-      "A complete Docker environment for running Stable Video Diffusion image-to-video XT 1.1 with TensorRT optimization. Automated model download, engine building, and a repeatable setup tuned for a 24 GB consumer GPU.",
+      "A complete container environment for image-to-video with SVD XT 1.1. Model download, engine build, and a repeatable setup tuned for 24 GB of consumer VRAM, so the second run takes minutes instead of an afternoon.",
     languages: ["Docker", "Shell", "TensorRT"],
     status: "prototype",
     area: "Practical AI",
@@ -68,9 +68,9 @@ export const projects: Project[] = [
   {
     name: "CC Link Manager",
     repo: `${org}/CCLinkManager`,
-    tagline: "A small static app for keeping track of, and joining, scheduled Zoom calls.",
+    tagline: "A small static app for keeping track of scheduled Zoom calls and joining them.",
     description:
-      "Upcoming and past calls in one tabbed view, a join button and copy-link on each, and a countdown to the next one. Built with Astro on GitHub Pages with Firestore behind it for live updates.",
+      "Upcoming and past calls in one view, a join button and a copy-link on each, and a countdown to the next one. Past calls stay visible on purpose, because that is what you need when someone says the link did not work. Astro on GitHub Pages with Firestore behind it.",
     languages: ["Astro", "JavaScript", "Firestore"],
     status: "prototype",
     area: "Automation and workflow tools",
@@ -78,9 +78,9 @@ export const projects: Project[] = [
   {
     name: "picord",
     repo: `${org}/picord`,
-    tagline: "A Discord bot that watched the rpilocator feed and posted Raspberry Pi stock alerts.",
+    tagline: "A Discord bot from the Raspberry Pi shortage. It watched rpilocator so you did not have to.",
     description:
-      "A Go service that polled the rpilocator RSS feed, deduplicated alerts through Postgres, and pushed new stock to a Discord channel. Built during the Pi shortage, shipped as a docker-compose stack.",
+      "A Go service that polled the rpilocator RSS feed, deduplicated alerts through Postgres, and posted new stock to a channel. Shipped as a docker-compose stack. It did its job. The shortage ended.",
     languages: ["Go", "Postgres", "Docker"],
     status: "archived",
     area: "Communication and coordination systems",

@@ -3,23 +3,32 @@ import Base from "../../layouts/Base.astro";
 import { getPosts } from "../../lib/posts";
 const posts = getPosts();
 ---
-<Base title="Notes" description="Lab notes from Kullhem Labs: write-ups, edge cases, and what was learned building things.">
-  <p class="eyebrow">Notes</p>
-  <h1>Lab notes</h1>
-  <p class="lede">Write-ups, weird edge cases, and what was learned. Also available as <a href="/rss.xml">RSS</a>.</p>
-  <ul class="posts">
+<Base title="Notes" description="Lab notes from Kullhem Labs: write-ups, the weird edge cases, and what actually worked.">
+  <p class="mono">notes · {posts.length} {posts.length === 1 ? "entry" : "entries"} · <a href="/rss.xml">rss</a></p>
+  <h1>Lab <em>notes.</em></h1>
+  <p class="lede">Write-ups, the weird edge cases, and what actually worked. Documenting the edge cases is one of the rules, so this is where they land.</p>
+  <ol class="posts">
     {posts.map((p) => (
-      <li class="card">
-        <time class="muted" datetime={p.date.toISOString()}>{p.dateText}</time>
-        <h3><a href={p.route}>{p.title}</a></h3>
-        {p.description && <p>{p.description}</p>}
+      <li>
+        <time class="mono" datetime={p.date.toISOString()}>{p.dateText}</time>
+        <div>
+          <h3><a href={p.route}>{p.title}</a></h3>
+          {p.description && <p>{p.description}</p>}
+        </div>
       </li>
     ))}
-  </ul>
+  </ol>
 </Base>
 <style>
-  .lede { color: var(--muted); }
-  .posts { list-style: none; padding: 0; margin: 24px 0 0; display: grid; gap: 12px; }
-  .posts time { font-family: var(--mono); font-size: 0.8rem; }
-  .posts h3 { margin: 4px 0 6px; }
+  h1 { margin: 10px 0 18px; }
+  .mono a { text-decoration: none; }
+  .posts { list-style: none; padding: 0; margin: 40px 0 0; }
+  .posts li { display: grid; grid-template-columns: 140px 1fr; gap: 20px; padding: 22px 0; border-top: 1px solid var(--line-soft); }
+  .posts li:last-child { border-bottom: 1px solid var(--line-soft); }
+  .posts time { padding-top: 8px; }
+  .posts h3 { margin: 0 0 4px; }
+  .posts h3 a { text-decoration: none; }
+  .posts h3 a:hover { color: var(--violet); }
+  .posts p { margin: 0; color: var(--ash); }
+  @media (max-width: 600px) { .posts li { grid-template-columns: 1fr; gap: 4px; } }
 </style>

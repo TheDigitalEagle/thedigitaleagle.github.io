@@ -1,36 +1,36 @@
 ---
 layout: ../../layouts/Post.astro
 title: Introducing Kullhem Labs
-description: kullhem.io is now the front door for the lab, not a bio page.
+description: kullhem.io is the front door for the lab now, not a bio page.
 date: 2026-09-03
 ---
 
-For a while this domain pointed at a one-paragraph personal page. That never matched what was actually
-happening under [github.com/Kullhem-io](https://github.com/Kullhem-io), so the site now reflects the lab instead.
+For a while this domain pointed at one paragraph about me. That never matched what was actually
+going on under [github.com/Kullhem-io](https://github.com/Kullhem-io), so the site is about the lab now.
 
 ## What the lab is
 
-Kullhem Labs is an independent engineering lab for practical software, automation, infrastructure,
-hardware-adjacent tools, and experimental interfaces. The shape of a project here is usually the same:
-a real problem, the smallest working system that solves it, and enough discipline that it can be
-understood under pressure later.
+An independent engineering lab for practical software, automation, infrastructure, hardware-adjacent
+tools, and experimental interfaces. Most projects here have the same shape: a real problem, the
+smallest system that actually solves it, and enough discipline that I can still understand it under
+pressure six months later.
 
-Some current threads:
+A few things on the bench right now:
 
-- **Beaglewing**, a keyboard and mouse bridge where the target machine sees a real USB device, so there is nothing to install on it.
-- **Crossplay**, a text RPG where several local LLMs each take a seat at the table and play together.
-- **Hybrid local agents**, benchmarks for running two local models in parallel across three GPUs and finding out where the parallelism is real.
+- **Beaglewing.** A keyboard and mouse bridge where the target machine sees a real USB device. Nothing to install on it, no network path back to you, works at the login screen.
+- **Crossplay.** A text RPG where several local LLMs each take a seat at the table and play together. Code owns the ledger, the DM owns the world.
+- **Hybrid local agents.** Two local models, three GPUs, and benchmarks to find out where the parallelism is real and where llama-server is quietly queueing everything.
 
-The full list is on the [projects page](/projects/).
+The full list is in the [catalog](/projects/).
 
 ## What this site is
 
-A static Astro build on GitHub Pages. No backend, no tracking, no secrets. The project list is a hand-curated
-file in the repo, so it stays honest without hitting the GitHub API at build time. A React and Vite rebuild
-is on the roadmap for when the site needs to do more than describe things.
+A static Astro build on GitHub Pages. No backend, no tracking, no secrets. The catalog is a hand-edited
+file in the repo, so it stays honest without hitting the GitHub API on every build. A React and Vite
+rebuild is on the list for when the site needs to do more than describe things. Until then, this is enough.
 
 ## What goes in Notes
 
-Write-ups from the projects, the weird edge cases that took a day to find, and the occasional
-"here is what actually worked" after a benchmark run. Documenting the edge cases is part of the
-philosophy, so this is where they land.
+Write-ups from the projects. The weird edge cases that took a day to find. The occasional "here is what
+actually worked" after a benchmark run. Documenting the edge cases is one of the rules, so this is where
+they land.
