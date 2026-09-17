@@ -16,6 +16,8 @@ const nav = [
 ];
 const sha = (process.env.GITHUB_SHA ?? "dev").slice(0, 7);
 const built = new Date().toISOString().slice(0, 10);
+const dedication =
+  "Dedicated to Kim, my forever love, who I appreciate and love more than anything. None of this is possible without her love and support.";
 // pick a crow pose per page unless the page names one
 const autoPose = path === "/" ? "hero" : path.startsWith("/projects") ? "corner" : path.startsWith("/blog/") && path !== "/blog/" ? "margin" : path.startsWith("/blog") ? "peek" : "lost";
 ---
@@ -125,6 +127,12 @@ const autoPose = path === "/" ? "hero" : path.startsWith("/projects") ? "corner"
       .site-footer .container { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10px 24px; }
       .site-footer a { color: var(--ash); text-decoration: none; }
       .site-footer a:hover { color: var(--bone); }
+      .stamp { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 10px; }
+      .dedication { appearance: none; background: none; border: 0; padding: 0 2px; margin: 0; cursor: pointer; font: inherit; line-height: 1; color: var(--violet); opacity: 0.35; transition: opacity 0.3s; }
+      .dedication:hover, .dedication:focus-visible, .dedication[aria-expanded="true"] { opacity: 1; }
+      .dedication:focus-visible { outline: 1px solid var(--violet); outline-offset: 3px; }
+      .dedication-text { font-family: var(--serif); font-style: italic; font-size: 0.95rem; letter-spacing: 0; color: var(--bone); flex-basis: 100%; opacity: 0; transform: translateY(-2px); transition: opacity 0.5s ease, transform 0.5s ease; }
+      .dedication-text.show { opacity: 1; transform: none; }
 
       /* notebook furniture */
       .rule { display: flex; align-items: center; gap: 14px; margin: 72px 0 28px; font-family: var(--mono); font-size: 0.74rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ash); }
@@ -157,6 +165,7 @@ const autoPose = path === "/" ? "hero" : path.startsWith("/projects") ? "corner"
     <slot name="head" />
   </head>
   <body>
+    <!-- Dedicated to Kim, my forever love, who I appreciate and love more than anything. None of this is possible without her love and support. -->
     <a class="skip" href="#main">Skip to content</a>
     <Crow pose={pose ?? autoPose} />
     <header class="site-header">
@@ -181,8 +190,30 @@ const autoPose = path === "/" ? "hero" : path.startsWith("/projects") ? "corner"
     <footer class="site-footer">
       <div class="container">
         <div>kullhem labs · run by <a href="https://github.com/TheDigitalEagle" target="_blank" rel="noopener">chad kullhem</a> · <a href="https://github.com/Kullhem-io" target="_blank" rel="noopener">org</a> · <a href="/rss.xml">rss</a> · <a href="https://github.com/TheDigitalEagle/thedigitaleagle.github.io" target="_blank" rel="noopener">source</a></div>
-        <div>build {sha} · {built} · static, no backend, nothing watching you but the crow</div>
+        <div class="stamp">
+          build {sha} · {built} · static, no backend, nothing watching you but the crow
+          <button class="dedication" type="button" aria-expanded="false" aria-controls="dedication-text" aria-label="Dedication">♥</button>
+          <span id="dedication-text" class="dedication-text" hidden>{dedication}</span>
+        </div>
       </div>
     </footer>
+    <script>
+      const heart = document.querySelector<HTMLButtonElement>(".dedication");
+      const text = document.getElementById("dedication-text");
+      if (heart && text) {
+        let pinned = false;
+        const show = (on: boolean) => {
+          if (on) text.hidden = false;
+          requestAnimationFrame(() => text.classList.toggle("show", on));
+          if (!on) setTimeout(() => { if (!text.classList.contains("show")) text.hidden = true; }, 500);
+          heart.setAttribute("aria-expanded", String(on));
+        };
+        heart.addEventListener("mouseenter", () => show(true));
+        heart.addEventListener("mouseleave", () => { if (!pinned) show(false); });
+        heart.addEventListener("focus", () => show(true));
+        heart.addEventListener("blur", () => { if (!pinned) show(false); });
+        heart.addEventListener("click", () => { pinned = !pinned; show(pinned); });
+      }
+    </script>
   </body>
 </html>
